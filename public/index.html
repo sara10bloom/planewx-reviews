@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlaneWX — Content Review Hub</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0B0E14;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .header {
+    text-align: center;
+    padding: 60px 20px 40px;
+  }
+  .header img { height: 40px; margin-bottom: 16px; }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .header p { color: #b0b3b8; font-size: 14px; }
+  .cards {
+    max-width: 600px;
+    width: 100%;
+    padding: 0 20px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .week-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #10B981;
+    margin-top: 12px;
+    margin-bottom: -4px;
+  }
+  a.card {
+    display: block;
+    background: #1c1e21;
+    border: 1px solid #2d2f33;
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-decoration: none;
+    color: #ffffff;
+    transition: all 0.2s ease;
+  }
+  a.card:hover {
+    border-color: #10B981;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(16,185,129,0.15);
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: #b0b3b8;
+  }
+  .card-tag {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-reels { background: #f3e5f5; color: #7b1fa2; }
+  .tag-full { background: #e3f2fd; color: #1565c0; }
+  .tag-campaign { background: #e8f5e9; color: #2e7d32; }
+  .tag-review { background: #fff3e0; color: #e65100; }
+  FOOTER {
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 12px;
+    color: #65676b;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <img src="PlaneWX-Italic-Logo.png" alt="PlaneWX">
+    <h1>Content Review Hub</h1>
+    <p>Review pages for Mark's approval</p>
+  </div>
+  <div class="cards">
+    <div class="week-label">Week 1 &mdash; March 22&ndash;28, 2026</div>
+
+    <a class="card" href="/reels-week-1.html">
+      <div class="card-title">Reels Review &mdash; Week 1</div>
+      <div class="card-desc">3 branded reels with captions for TikTok &amp; Instagram</div>
+      <span class="card-tag tag-reels">3 Reels</span>
+      <span class="card-tag tag-review">Needs Review</span>
+    </a>
+
+    <a class="card" href="/week-1.html">
+      <div class="card-title">Full Content Review &mdash; Week 1</div>
+      <div class="card-desc">All 11 posts across Facebook, Instagram, TikTok &amp; YouTube</div>
+      <span class="card-tag tag-full">Full Week</span>
+      <span class="card-tag tag-review">Needs Review</span>
+    </a>
+
+    <a class="card" href="/weekly-content-week-1.html">
+      <div class="card-title">Weekly Content &mdash; Week 1</div>
+      <div class="card-desc">9-post content plan with carousels, photos &amp; video briefs</div>
+      <span class="card-tag tag-full">Content Plan</span>
+    </a>
+
+    <a class="card" href="/living-campaign.html">
+      <div class="card-title">Living Campaign</div>
+      <div class="card-desc">8-week campaign overview &amp; strategy</div>
+      <span class="card-tag tag-campaign">Campaign</span>
+    </a>
+  
+  <?div>
+  <footer>&copy; 2026 PlaneWX, LLC &middot; Internal Review</footer>
+</ody>
+</html>
