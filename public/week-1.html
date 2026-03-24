@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlaneWX Week 1 — Content Review</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f0f2f5;
+    color: #1c1e21;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* ══════ HEADER ══════ */
+  .header {
+    background: #1c1e21;
+    border-bottom: 1px solid #dddfe2;
+    padding: 20px 0 16px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .header-logo {
+    height: 36px;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+  }
+  .header .subtitle { color: #b0b3b8; font-size: 13px; margin-top: 4px; }
+  .header .status-bar { display: flex; justify-content: center; gap: 10px; margin-top: 10px; font-size: 12px; }
+  .tag { padding: 4px 12px; border-radius: 20px; font-weight: 500; }
+  .tag-review { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+  .tag-info { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 16px 16px 80px; }
+
+  /* ══════ WORKFLOW BANNER ══════ */
+  .workflow-banner {
+    background: #ffffff;
+    border: 1px solid #dddfe2;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: #65676b;
+    text-align: center;
+  }
+  .workflow-banner strong { color: #1877f2; }
+  .workflow-steps { display: flex; justify-content: center; gap: 6px; margin-top: 12px; flex-wrap: wrap; font-size: 12px; }
+  .workflow-step { display: flex; align-items: center; gap: 6px; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; }
+  .step-active { background: #1877f2; color: #fff; }
+  .step-completed { background: #31a24c; color: #fff; }
+  .step-pending { background: #e4e6eb; color: #65676b; }
+  .step-arrow { color: #bec3c9; font-size: 16px; }
+
+  /* ══════ DAY HEADERS ══════ */
+  .day-header {
+    margin-top: 28px;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #dddfe2;
+    border-left: 4px solid #1877f2;
+    border-radius: 0 8px 8px 0;
+  }
+  .day-header h2 { font-size: 16px; font-weight: 700; color: #1c1e21; }
+  .day-header .day-count { font-size: 12px; color: #65676b; margin-top: 2px; }
+
+  /* ══════ FACEBOOK POST CARD ══════ */
+  .fb-card {
+    background: #ffffff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .post-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: #f0f2f5;
+    border-bottom: 1px solid #dddfe2;
+    font-size: 11px;
+    color: #65676b;
+    font-weight: 600;
+  }
+  .post-label .platform-tag {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .platform-fb { background: #e7f3ff; color: #1877f2; }
+  .platform-ig { background: #fce4ec; color: #e1306c; }
+  .platform-tt { background: #e0e0e0; color: #000; }
+  .platform-yt { background: #ffebee; color: #ff0000; }
+
+  .fb-post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px 8px;
+  }
+  .fb-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: #e4e6eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .fb-post-name { font-size: 15px; font-weight: 600; color: #050505; }
+  .fb-post-time { font-size: 13px; color: #65676b; }
+  .fb-post-caption {
+    padding: 4px 16px 12px;
+    font-size: 15px;
+    color: #050505;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .fb-post-image { width: 100%; display: block; }
+  .fb-post-stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 16px;
+    font-size: 15px;
+    color: #65676b;
+    border-bottom: 1px solid #dddfe2;
+  }
+  .fb-post-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 4px 0;
+  }
+  .fb-action-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 12px 0; font-size: 15px; font-weight: 600; color: #65676b;
+    cursor: pointer;
+  }
+
+  /* ══════ INSTAGRAM POST CARD ══════ */
+  .ig-card {
+    background: #ffffff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .ig-post-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px;
+  }
+  .ig-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #e4e6eb;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .ig-post-name { font-size: 14px; font-weight: 600; color: #262626; }
+
+  .ig-carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  .ig-carousel-track {
+    display: flex;
+    transition: transform 0.3s ease;
+  }
+  .ig-carousel-track img {
+    width: 100%;
+    flex-shrink: 0;
+    display: block;
+  }
+  .ig-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 10px 0 4px;
+  }
+  .ig-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #c7c7c7;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .ig-dot.active { background: #3897f0; }
+  .ig-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .ig-carousel-btn.prev { left: 8px; }
+  .ig-carousel-btn.next { right: 8px; }
+
+  .ig-post-image { width: 100%; display: block; }
+
+  .ig-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 16px 4px;
+  }
+  .ig-actions-left { display: flex; gap: 16px; }
+  .ig-icon { font-size: 24px; color: #262626; cursor: pointer; }
+
+  .ig-likes { padding: 2px 16px; font-size: 14px; font-weight: 600; color: #262626; }
+  .ig-caption-area {
+    padding: 6px 16px 12px;
+    font-size: 14px;
+    color: #262626;
+    line-height: 1.5;
+  }
+  .ig-caption-handle { font-weight: 600; }
+  .ig-caption-text {
+    white-space: pre-wrap;
+    color: #262626;
+    margin-top: 2px;
+  }
+  .ig-hashtags { color: #00376b; font-size: 13px; margin-top: 4px; }
+  .carousel-link-note {
+    font-size: 11px;
+    color: #65676b;
+    margin: 4px 16px 8px;
+    font-style: italic;
+  }
+  .ig-manychat-badge {
+    margin: 8px 16px 12px;
+    padding: 6px 12px;
+    background: #fff8e1;
+    border: 1px solid #ffcc80;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #e65100;
+    font-weight: 600;
+  }
+
+  /* ══════ REEL / TIKTOK CARD ══════ */
+  .reel-card {
+    background: #ffffff;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .reel-preview {
+    position: relative;
+    min-height: 480px;
+    background: #000;
+    overflow: hidden;
+  }
+  .reel-video-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+    z-index: 1;
+  }
+  .reel-video-placeholder {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+  }
+  .reel-video-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .reel-video-placeholder .no-img {
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    width: 100%;
+    height: 100%;
+  }
+
+  .reel-overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    text-align: center;
+    width: 85%;
+  }
+  .reel-text-line {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+
+  .reel-sidebar {
+    position: absolute;
+    right: 12px;
+    bottom: 140px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .reel-sidebar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .reel-sidebar-icon { font-size: 24px; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
+  .reel-sidebar-count { font-size: 11px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+
+  .reel-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    padding: 16px 14px 20px;
+  }
+  .reel-account {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .reel-account-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid #fff;
+    background: #e4e6eb;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .reel-account-name { font-size: 13px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+  .reel-caption-text {
+    font-size: 13px;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    line-height: 1.4;
+    white-space: pre-wrap;
+    max-height: 60px;
+    overflow: hidden;
+  }
+  .reel-hashtags {
+    font-size: 12px;
+    color: #fff;
+    opacity: 0.8;
+    margin-top: 4px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+
+  .tt-topbar {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+  }
+  .tt-topbar .active-tab { color: #fff; border-bottom: 2px solid #fff; padding-bottom: 4px; }
+
+  .tt-music-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #fff;
+    opacity: 0.7;
+  }
+
+  .yt-badge {
+    position: absolute;
+    top: 16px;
+    left: 14px;
+    z-index: 10;
+    background: rgba(255,0,0,0.9);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* ══════ SCHEDULE TAG ══════ */
+  .schedule-tag {
+    text-align: center;
+    font-size: 12px;
+    color: #65676b;
+    margin-top: -8px;
+    margin-bottom: 8px;
+    padding: 4px 0;
+  }
+  .schedule-tag span {
+    background: #ffffff;
+    padding: 4px 12px;
+    border-radius: 10px;
+    border: 1px solid #dddfe2;
+  }
+
+  /* ══════ VIDEO DIRECTION ══════ */
+  .video-direction {
+    background: #ffffff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #65676b;
+  }
+  .video-direction strong { color: #1877f2; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .video-direction .timing-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .timing-row {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .timing-sec { color: #1877f2; font-weight: 600; min-width: 48px; }
+  .timing-text { color: #1c1e21; }
+
+  /* ══════ VIDEO SOURCE FILE ══════ */
+  .video-source {
+    background: #e8f5e9;
+    border: 2px solid #4caf50;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 10px 20px 0;
+    font-size: 14px;
+  }
+  .video-source strong { color: #2e7d32; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .video-source .file-name { font-family: 'Courier New', monospace; font-size: 15px; font-weight: 700; color: #1b5e20; margin: 6px 0; }
+  .video-source .file-meta { font-size: 12px; color: #666; }
+  .video-source .status-ready { display: inline-block; background: #4caf50; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+  .video-source .status-needs-edit { display: inline-block; background: #ff9800; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+
+  /* ══════ FEEDBACK SECTION ══════ */
+  .feedback-section {
+    background: #ffffff;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-top: -8px;
+    margin-bottom: 16px;
+  }
+  .feedback-section summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1877f2;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .feedback-section summary::-webkit-details-marker { display: none; }
+  .feedback-section summary::before { content: "💬"; }
+  .feedback-textarea {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px 12px;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 60px;
+    background: #f0f2f5;
+    color: #1c1e21;
+  }
+  .feedback-textarea:focus {
+    outline: none;
+    border-color: #1877f2;
+    background: #ffffff;
+  }
+  .feedback-textarea::placeholder { color: #bec3c9; }
+
+  /* ══════ SUMMARY / CHECKLIST ══════ */
+  .summary-section {
+    background: #ffffff;
+    border: 1px solid #dddfe2;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 28px;
+  }
+  .summary-section h3 { font-size: 17px; color: #1c1e21; margin-bottom: 14px; }
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 14px;
+    color: #65676b;
+  }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 2px solid #bec3c9;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+  }
+  .check-box:hover { border-color: #1877f2; }
+  .needs-action { color: #e65100; font-weight: 500; }
+
+  .divider {
+    height: 1px;
+    background: #dddfe2;
+    margin: 24px 0;
+  }
+
+  /* ══════ WX SCREENSHOTS GRID ══════ */
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .screenshots-grid img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #dddfe2;
+    cursor: pointer;
+  }
+  .screenshots-grid .ss-label {
+    font-size: 11px;
+    color: #65676b;
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* ══════ LIGHTBOX ══════ */
+  .lightbox-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .lightbox-overlay.active { display: flex; }
+  .lightbox-overlay img { max-width: 90%; max-height: 90vh; border-radius: 8px; }
+
+  /* ══════ MARK FEEDBACK PANEL ══════ */
+  .mark-feedback-panel {
+    background: #ffffff;
+    border: 2px solid #1877f2;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 28px;
+  }
+  .mark-feedback-panel h3 {
+    font-size: 17px;
+    color: #1c1e21;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mark-feedback-panel .sub { font-size: 13px; color: #65676b; margin-bottom: 16px; }
+  .mark-overall-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dddfe2;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 100px;
+    background: #f0f2f5;
+    color: #1c1e21;
+  }
+  .mark-overall-textarea:focus {
+    outline: none;
+    border-color: #1877f2;
+    background: #fff;
+  }
+  .send-feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 12px 28px;
+    background: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .send-feedback-btn:hover { background: #1565c0; }
+
+  /* ══════ LOGO IN HEADER / DIVIDERS ══════ */
+  .logo-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .logo-divider .line {
+    flex: 1;
+    height: 1px;
+    background: #dddfe2;
+  }
+  .logo-divider img {
+    height: 20px;
+    opacity: 0.5;
+  }
+
+  /* ══════ FOOTER ══════ */
+  .footer {
+    text-align: center;
+    padding: 32px 16px;
+    color: #65676b;
+    font-size: 12px;
+  }
+  .footer img { height: 28px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ══════ HEADER ══════ -->
+<div class="header">
+  <img class="header-logo" src="PlaneWX-Italic-Logo.png" alt="PlaneWX">
+  <h1>Week 1 — Content Review</h1>
+  <div class="subtitle">Campaign Launch — March 24–29, 2026 · 11 Posts</div>
+  <div class="status-bar">
+    <span class="tag tag-review">Awaiting Mark's Review</span>
+    <span class="tag tag-info">11 Posts · 2 Carousels · 6 Videos (3 Ready, 3 Need Editing)</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- REVIEW CHECKLIST — MOVED TO TOP              -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="summary-section">
+    <h3>Review Checklist</h3>
+    <div class="checklist-item"><div class="check-box" onclick="this.style.background=this.style.background?'':'#1877f2'; this.style.borderColor=this.style.borderColor==='rgb(24, 119, 242)'?'#bec3c9':'#1877f2';"></div><div>Scroll through each post — does the voice feel like Mark?</div></div>
+    <div class="checklist-item"><div class="check-box" onclick="this.style.background=this.style.background?'':'#1877f2'; this.style.borderColor=this.style.borderColor==='rgb(24, 119, 242)'?'#bec3c9':'#1877f2';"></div><div>Swipe through carousels (Posts 2 &amp; 6) — text readable, slides flow?</div></div>
+    <div class="checklist-item"><div class="check-box" onclick="this.style.background=this.style.background?'':'#1877f2'; this.style.borderColor=this.style.borderColor==='rgb(24, 119, 242)'?'#bec3c9':'#1877f2';"></div><div>Check WX Score screenshot crop in Post 5</div></div>
+    <div class="checklist-item"><div class="check-box" onclick="this.style.background=this.style.background?'':'#1877f2'; this.style.borderColor=this.style.borderColor==='rgb(24, 119, 242)'?'#bec3c9':'#1877f2';"></div><div>Review photo choices — right images for each post?</div></div>
+    <div class="checklist-item"><div class="check-box" onclick="this.style.background=this.style.background?'':'#1877f2'; this.style.borderColor=this.style.borderColor==='rgb(24, 119, 242)'?'#bec3c9':'#1877f2';"></div><div>Confirm hashtags and posting times</div></div>
+  </div>
+
+  <div class="workflow-banner">
+    <strong>How to review:</strong> Scroll through each post as it will appear on the platform. Leave feedback on any post using the "Add feedback" dropdown below it. When done, use the feedback panel at the bottom to send all notes.
+    <div class="workflow-steps">
+      <div class="workflow-step"><span class="step-num step-completed">✓</span> Content Created</div>
+      <span class="step-arrow">→</span>
+      <div class="workflow-step"><span class="step-num step-completed">✓</span> Sara Reviewed & Edited</div>
+      <span class="step-arrow">→</span>
+      <div class="workflow-step"><span class="step-num step-active">3</span> Mark Reviews</div>
+      <span class="step-arrow">→</span>
+      <div class="workflow-step"><span class="step-num step-pending">4</span> Scheduled on Platforms</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- TUESDAY, MARCH 25                              -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="day-header">
+    <h2>Tuesday, March 25</h2>
+    <div class="day-count">3 posts — Facebook, Instagram, TikTok</div>
+  </div>
+
+  <!-- ══════ POST 1 — FACEBOOK POLL ══════ -->
+  <div class="fb-card">
+    <div class="post-label">
+      <span>Post 1 of 11</span>
+      <span class="platform-tag platform-fb">Facebook</span>
+    </div>
+    <div class="fb-post-header">
+      <div class="fb-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+      <div>
+        <div class="fb-post-name">PlaneWX</div>
+        <div class="fb-post-time">Just now · 🌐</div>
+      </div>
+    </div>
+    <div class="fb-post-caption">Honest question for the group:
+
+How far in advance do you start checking weather before a cross-country?
+
+A) Day of
+B) 1–2 days out
+C) 3–5 days out
+D) A week or more
+
+Most pilots I talk to say they start about 24 hours out. But by then, the bags are packed, the hotel is booked, and the family's in the car. That's the hardest moment to make an objective call.
+
+We built PlaneWX to move that decision earlier — 3, 7, even 14 days out — when you still have options.
+
+What's your process?
+
+app.planewx.ai — free, no credit card.</div>
+    <img class="fb-post-image" src="Photos/IMG_0440.jpeg" alt="Moody through-the-prop shot">
+    <div class="fb-post-stats">
+      <span>👍 ❤️ 12</span>
+      <span>8 comments · 3 shares</span>
+    </div>
+    <div class="fb-post-actions">
+      <span class="fb-action-btn">👍 Like</span>
+      <span class="fb-action-btn">💬 Comment</span>
+      <span class="fb-action-btn">↗️ Share</span>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Meta Business Suite · Tue 10:00 AM ET</span></div>
+  <details class="feedback-section" data-post="1">
+    <summary>Add feedback for Post 1</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here — e.g., 'Caption too long' or 'Love this one!'"></textarea>
+  </details>
+
+  <!-- ══════ POST 2 — INSTAGRAM CAROUSEL ══════ -->
+  <div class="ig-card">
+    <div class="post-label">
+      <span>Post 2 of 11</span>
+      <span class="platform-tag platform-ig">Instagram</span>
+    </div>
+    <div class="ig-post-header">
+      <div class="ig-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+      <span class="ig-post-name">plane_wx</span>
+    </div>
+    <div class="ig-carousel-container" id="carousel-tue">
+      <button class="ig-carousel-btn prev" onclick="moveCarousel('carousel-tue', -1)">‹</button>
+      <button class="ig-carousel-btn next" onclick="moveCarousel('carousel-tue', 1)">›</button>
+      <div class="ig-carousel-track">
+        <img src="Carousels/Tue-Slide-1-Cover.png" alt="Slide 1" onclick="openLightbox(this)">
+        <img src="Carousels/Tue-Slide-2-Problem.png" alt="Slide 2" onclick="openLightbox(this)">
+        <img src="Carousels/Tue-Slide-3-Different.png" alt="Slide 3" onclick="openLightbox(this)">
+        <img src="Carousels/Tue-Slide-4-WXScore.png" alt="Slide 4" onclick="openLightbox(this)">
+        <img src="Carousels/Tue-Slide-5-14Day.png" alt="Slide 5" onclick="openLightbox(this)">
+        <img src="Carousels/Tue-Slide-6-PAVE.png" alt="Slide 6" onclick="openLightbox(this)">
+        <img src="Carousels/Tue-Slide-7-MultiModel.png" alt="Slide 7" onclick="openLightbox(this)">
+        <img src="Carousels/Tue-Slide-8-CTA.png" alt="Slide 8" onclick="openLightbox(this)">
+      </div>
+      <div class="ig-carousel-dots" id="carousel-tue-dots">
+        <span class="ig-dot active" onclick="goToSlide('carousel-tue',0)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-tue',1)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-tue',2)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-tue',3)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-tue',4)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-tue',5)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-tue',6)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-tue',7)"></span>
+      </div>
+    </div>
+    <div class="ig-actions">
+      <div class="ig-actions-left">
+        <span class="ig-icon">♡</span>
+        <span class="ig-icon">💬</span>
+        <span class="ig-icon">✈️</span>
+      </div>
+      <span class="ig-icon">🔖</span>
+    </div>
+    <div class="ig-likes">247 likes</div>
+    <div class="ig-caption-area">
+      <span class="ig-caption-handle">plane_wx </span>
+      <span class="ig-caption-text">Every weather app shows you raw data and says "good luck."
+
+PlaneWX actually synthesizes it — three forecast models, your aircraft, your minimums — into a single score you can act on. Swipe through to see how it works.
+
+Free plan gives you the full analysis engine. No credit card. No time limit.
+
+Comment WX and we'll send you the link.
+
+app.planewx.ai</span>
+      <div class="ig-hashtags">#PlaneWX #WXScore #PilotDecisionMaking #AviationWeather #GeneralAviation #IFRPilot #FlightPlanning #WeatherBriefing #PilotLife #PAVE</div>
+    </div>
+    <div class="carousel-link-note">Last slide links to app.planewx.ai</div>
+    <div class="ig-manychat-badge">⚡ ManyChat: Comment "WX" → Free Trial DM</div>
+  </div>
+  <div class="schedule-tag"><span>📅 Meta Business Suite · Tue 11:00 AM ET</span></div>
+  <details class="feedback-section" data-post="2">
+    <summary>Add feedback for Post 2</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here — e.g., 'Slide 4 headline needs work'"></textarea>
+  </details>
+
+  <!-- ══════ POST 3 — TIKTOK ══════ -->
+  <div class="reel-card">
+    <div class="post-label">
+      <span>Post 3 of 11</span>
+      <span class="platform-tag platform-tt">TikTok</span>
+    </div>
+    <div class="reel-preview">
+      <div class="reel-video-placeholder"><img src="Photos/IMG_0526.jpeg" alt="Cockpit clouds"></div>
+      <div class="reel-video-bg"></div>
+      <div class="tt-topbar">
+        <span>Following</span>
+        <span class="active-tab">For You</span>
+      </div>
+      <div class="reel-overlay-text">
+        <div class="reel-text-line">Every flight deserves</div>
+        <div class="reel-text-line">a proper briefing.</div>
+        <div class="reel-text-line" style="margin-top:12px; font-size:18px; opacity:0.85;">Not 5 apps and guesswork.</div>
+      </div>
+      <div class="reel-sidebar">
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">♡</span><span class="reel-sidebar-count">1,247</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">💬</span><span class="reel-sidebar-count">83</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">🔖</span><span class="reel-sidebar-count">412</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">↗️</span><span class="reel-sidebar-count">Share</span></div>
+      </div>
+      <div class="reel-bottom">
+        <div class="reel-account">
+          <div class="reel-account-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+          <span class="reel-account-name">@planewx</span>
+        </div>
+        <div class="reel-caption-text">This is why checking weather 30 minutes before departure isn't a briefing — it's a coin flip.
+
+PlaneWX synthesizes three forecast models against your aircraft and your minimums. One score. 14 days out.
+
+Link in bio — free, no credit card.</div>
+        <div class="reel-hashtags">#PlaneWX #PilotLife #AviationWeather #WXScore #FlightPlanning</div>
+        <div class="tt-music-bar">🎵 Ambient cinematic - planewx</div>
+      </div>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Buffer · Tue 7:00 PM ET</span></div>
+  <div class="video-source">
+    <strong>📂 Branded Video</strong>
+    <div class="file-name"><a href="Videos/Tue_TikTok_Briefing_BRANDED.mp4" style="color:inherit;text-decoration:underline;">Videos/Tue_TikTok_Briefing_BRANDED.mp4</a></div>
+    <div class="file-meta">Vertical 1080×1920 · 39 seconds · Pillow-rendered text overlays matching carousel style + ambient music + fade-to-black logo end card</div>
+    <span class="status-ready">Ready to Post</span>
+  </div>
+  <div class="video-direction">
+    <strong>🎬 Production Notes</strong>
+    <p style="margin-top:8px;">Processed from <code>videoSpeed (2).mp4</code> using Pillow-rendered text overlays matching the carousel/website visual system. Dark navy rounded panels (#0B0E14 @ 88% opacity) with sky blue accent bar, Poppins Bold typography, emerald green accent text. Text cards: "Every flight deserves / a proper briefing." (emerald) → "Not 5 apps / and guesswork." → "One app. Your aircraft. / Your weather." (emerald) → "This is why we built / PlaneWX." (emerald) → "Your WX Score. / Your decision." (cyan). Ambient music bed at 15% mix. Fades to black → PlaneWX italic logo + app.planewx.ai end card.</p>
+  </div>
+  <details class="feedback-section" data-post="3">
+    <summary>Add feedback for Post 3</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <div class="logo-divider"><span class="line"></span><img src="PlaneWX-Italic-Logo.png" alt="PlaneWX"><span class="line"></span></div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- WEDNESDAY, MARCH 26                            -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="day-header">
+    <h2>Wednesday, March 26</h2>
+    <div class="day-count">1 post — Instagram</div>
+  </div>
+
+  <!-- ══════ POST 4 — INSTAGRAM REEL ══════ -->
+  <div class="reel-card">
+    <div class="post-label">
+      <span>Post 4 of 11</span>
+      <span class="platform-tag platform-ig">Instagram Reel</span>
+    </div>
+    <div class="reel-preview">
+      <div class="reel-video-placeholder"><div class="no-img"></div></div>
+      <div class="reel-video-bg"></div>
+      <div class="reel-overlay-text">
+        <div class="reel-text-line" style="font-size:16px; opacity:0.7;">Checking weather before a flight?</div>
+        <div class="reel-text-line" style="font-size:14px; opacity:0.6; margin:12px 0;">TAFs. METARs. Prog charts. PIREPs.</div>
+        <div class="reel-text-line" style="font-size:18px;">Five apps. One pilot.</div>
+        <div class="reel-text-line" style="font-size:20px; color:#10B981;">Zero synthesis.</div>
+      </div>
+      <div class="reel-sidebar">
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">♡</span><span class="reel-sidebar-count">892</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">💬</span><span class="reel-sidebar-count">67</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">✈️</span><span class="reel-sidebar-count">Send</span></div>
+      </div>
+      <div class="reel-bottom">
+        <div class="reel-account">
+          <div class="reel-account-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+          <span class="reel-account-name">plane_wx</span>
+        </div>
+        <div class="reel-caption-text">The difference between checking weather and understanding it.
+
+PlaneWX synthesizes three forecast models against your specific aircraft and personal minimums — into a WX Score you can act on. Days before departure, not hours.
+
+Free plan. Full analysis engine. No credit card.
+
+app.planewx.ai</div>
+        <div class="reel-hashtags">#PlaneWX #WXScore #AviationWeather #PilotLife #FlightPlanning</div>
+      </div>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Meta Business Suite · Wed 6:00 PM ET</span></div>
+  <div class="video-source">
+    <strong>📂 Branded Video</strong>
+    <div class="file-name"><a href="Videos/Wed_IG_Reel_Synthesis_BRANDED.mp4" style="color:inherit;text-decoration:underline;">Videos/Wed_IG_Reel_Synthesis_BRANDED.mp4</a></div>
+    <div class="file-meta">Vertical 1080×1920 · 41 seconds · Pillow-rendered text overlays matching carousel style + ambient music + fade-to-black logo end card</div>
+    <span class="status-ready">Ready to Post</span>
+  </div>
+  <div class="video-direction">
+    <strong>🎬 Production Notes — Reel Timing</strong>
+    <div class="timing-list">
+      <div class="timing-row"><span class="timing-sec">1–5s</span><span class="timing-text">"Checking weather before a flight?" — branded dark box overlay on cockpit footage</span></div>
+      <div class="timing-row"><span class="timing-sec">6–11s</span><span class="timing-text">"TAFs. METARs. Prog charts. PIREPs." — timed text card</span></div>
+      <div class="timing-row"><span class="timing-sec">12–16s</span><span class="timing-text">"Five apps. One pilot." — branded text with sky blue accent bar</span></div>
+      <div class="timing-row"><span class="timing-sec">17–22s</span><span class="timing-text">"Zero synthesis." — RED accent for emphasis</span></div>
+      <div class="timing-row"><span class="timing-sec">23–29s</span><span class="timing-text">"PlaneWX synthesizes it all for you." — transition to solution</span></div>
+      <div class="timing-row"><span class="timing-sec">30–36s</span><span class="timing-text">"One WX Score. Your minimums. Your aircraft." — emerald green accent</span></div>
+      <div class="timing-row"><span class="timing-sec">37–42s</span><span class="timing-text">Fade to black → PlaneWX logo + app.planewx.ai</span></div>
+    </div>
+    <p style="margin-top:10px;">Processed from IMG_2477.MOV using Pillow-rendered overlays matching the website/carousel visual system. Dark navy rounded panels, sky blue accent bar, emerald/cyan accent text. Ambient music bed at 15% mix throughout.</p>
+  </div>
+  <details class="feedback-section" data-post="4">
+    <summary>Add feedback for Post 4</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <div class="logo-divider"><span class="line"></span><img src="PlaneWX-Italic-Logo.png" alt="PlaneWX"><span class="line"></span></div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- THURSDAY, MARCH 27                             -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="day-header">
+    <h2>Thursday, March 27</h2>
+    <div class="day-count">3 posts — Facebook, Instagram, TikTok + YouTube Short</div>
+  </div>
+
+  <!-- ══════ POST 5 — FACEBOOK SCREENSHOT ══════ -->
+  <div class="fb-card">
+    <div class="post-label">
+      <span>Post 5 of 11</span>
+      <span class="platform-tag platform-fb">Facebook</span>
+    </div>
+    <div class="fb-post-header">
+      <div class="fb-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+      <div>
+        <div class="fb-post-name">PlaneWX</div>
+        <div class="fb-post-time">Just now · 🌐</div>
+      </div>
+    </div>
+    <div class="fb-post-caption">Sunday flight: KLNK to KROG. WX Score: 95%.
+
+That number isn't generic. It's calculated against the N17DA's specific capabilities and my personal minimums — not some one-size-fits-all green/yellow/red that treats a Skyhawk and a King Air the same.
+
+Three models (HRRR, GFS, ECMWF) agree on favorable conditions along the route. Ceilings and icing: favorable. Winds: 25-knot tailwind. Turbulence is marginal at cruise — which is why it's 95 and not 100.
+
+Even at 95%, PlaneWX flags 3 gotchas to review: density altitude considerations at both airports, ridge expansion mid-week near arrival, and a reminder that this is an extended forecast worth rechecking as TAFs become available.
+
+That's what synthesis looks like. Not just "VFR" or "IFR" — a score that means something specific to your airplane and your experience level.
+
+The free plan uses the exact same scoring engine as Pro. We limit how much you can use PlaneWX, not how well it works.
+
+app.planewx.ai</div>
+    <img class="fb-post-image" src="Screenshots/WXScore-Trip-Card-95.jpg" alt="WX Score 95%">
+    <div class="fb-post-stats">
+      <span>👍 ❤️ 34</span>
+      <span>15 comments · 8 shares</span>
+    </div>
+    <div class="fb-post-actions">
+      <span class="fb-action-btn">👍 Like</span>
+      <span class="fb-action-btn">💬 Comment</span>
+      <span class="fb-action-btn">↗️ Share</span>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Meta Business Suite · Thu 10:00 AM ET</span></div>
+  <details class="feedback-section" data-post="5">
+    <summary>Add feedback for Post 5</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <!-- ══════ POST 6 — INSTAGRAM CAROUSEL ══════ -->
+  <div class="ig-card">
+    <div class="post-label">
+      <span>Post 6 of 11</span>
+      <span class="platform-tag platform-ig">Instagram</span>
+    </div>
+    <div class="ig-post-header">
+      <div class="ig-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+      <span class="ig-post-name">plane_wx</span>
+    </div>
+    <div class="ig-carousel-container" id="carousel-thu">
+      <button class="ig-carousel-btn prev" onclick="moveCarousel('carousel-thu', -1)">‹</button>
+      <button class="ig-carousel-btn next" onclick="moveCarousel('carousel-thu', 1)">›</button>
+      <div class="ig-carousel-track">
+        <img src="Carousels/Thu-Slide-1-Cover.png" alt="Slide 1" onclick="openLightbox(this)">
+        <img src="Carousels/Thu-Slide-2-Feature1.png" alt="Slide 2" onclick="openLightbox(this)">
+        <img src="Carousels/Thu-Slide-3-Feature2.png" alt="Slide 3" onclick="openLightbox(this)">
+        <img src="Carousels/Thu-Slide-4-Feature3.png" alt="Slide 4" onclick="openLightbox(this)">
+        <img src="Carousels/Thu-Slide-5-Feature4.png" alt="Slide 5" onclick="openLightbox(this)">
+        <img src="Carousels/Thu-Slide-6-Feature5.png" alt="Slide 6" onclick="openLightbox(this)">
+        <img src="Carousels/Thu-Slide-7-Complement.png" alt="Slide 7" onclick="openLightbox(this)">
+        <img src="Carousels/Thu-Slide-8-CTA.png" alt="Slide 8" onclick="openLightbox(this)">
+      </div>
+      <div class="ig-carousel-dots" id="carousel-thu-dots">
+        <span class="ig-dot active" onclick="goToSlide('carousel-thu',0)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-thu',1)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-thu',2)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-thu',3)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-thu',4)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-thu',5)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-thu',6)"></span>
+        <span class="ig-dot" onclick="goToSlide('carousel-thu',7)"></span>
+      </div>
+    </div>
+    <div class="ig-actions">
+      <div class="ig-actions-left">
+        <span class="ig-icon">♡</span>
+        <span class="ig-icon">💬</span>
+        <span class="ig-icon">✈️</span>
+      </div>
+      <span class="ig-icon">🔖</span>
+    </div>
+    <div class="ig-likes">183 likes</div>
+    <div class="ig-caption-area">
+      <span class="ig-caption-handle">plane_wx </span>
+      <span class="ig-caption-text">ForeFlight and Garmin Pilot are incredible for what they do. PlaneWX fills a different gap — the planning phase that starts days before your operational briefing.
+
+Swipe through for 5 ways they work together.
+
+Free plan. Full analysis engine. No credit card.
+
+Comment WX for a free trial link.
+
+app.planewx.ai</span>
+      <div class="ig-hashtags">#PlaneWX #ForeFlight #GarminPilot #FlightPlanning #WXScore #AviationWeather #PilotLife #GeneralAviation #IFRFlying #WeatherBriefing</div>
+    </div>
+    <div class="carousel-link-note">Last slide links to app.planewx.ai</div>
+    <div class="ig-manychat-badge">⚡ ManyChat: Comment "WX" → Free Trial DM</div>
+  </div>
+  <div class="schedule-tag"><span>📅 Meta Business Suite · Thu 11:00 AM ET</span></div>
+  <details class="feedback-section" data-post="6">
+    <summary>Add feedback for Post 6</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <!-- ══════ POST 7 — TIKTOK + YT SHORT ══════ -->
+  <div class="reel-card">
+    <div class="post-label">
+      <span>Post 7 of 11</span>
+      <div style="display:flex; gap:6px;">
+        <span class="platform-tag platform-tt">TikTok</span>
+        <span class="platform-tag platform-yt">YouTube Short</span>
+      </div>
+    </div>
+    <div class="reel-preview">
+      <div class="reel-video-placeholder"><div class="no-img"></div></div>
+      <div class="reel-video-bg"></div>
+      <div class="tt-topbar">
+        <span>Following</span>
+        <span class="active-tab">For You</span>
+      </div>
+      <div class="yt-badge">▶ Also YouTube Short</div>
+      <div class="reel-overlay-text">
+        <div class="reel-text-line">One app.</div>
+        <div class="reel-text-line">Your minimums.</div>
+        <div class="reel-text-line">Your aircraft.</div>
+        <div class="reel-text-line" style="color:#10B981; font-size:26px; margin-top:8px;">Your score.</div>
+      </div>
+      <div class="reel-sidebar">
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">♡</span><span class="reel-sidebar-count">2,103</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">💬</span><span class="reel-sidebar-count">156</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">🔖</span><span class="reel-sidebar-count">847</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">↗️</span><span class="reel-sidebar-count">Share</span></div>
+      </div>
+      <div class="reel-bottom">
+        <div class="reel-account">
+          <div class="reel-account-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+          <span class="reel-account-name">@planewx</span>
+        </div>
+        <div class="reel-caption-text">Your SR22T and a rental 172 shouldn't get the same weather score. They don't fly the same.
+
+PlaneWX calculates your WX Score against YOUR aircraft capabilities and YOUR personal minimums. Not generic categories.
+
+Free — link in bio.</div>
+        <div class="reel-hashtags">#PlaneWX #WXScore #PilotDecisionMaking #AviationWeather #SR22T</div>
+        <div class="tt-music-bar">🎵 Ambient cinematic - planewx</div>
+      </div>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Buffer · Thu 12:00 PM ET · TikTok + YouTube Shorts</span></div>
+  <div class="video-source">
+    <strong>📂 Branded Video</strong>
+    <div class="file-name"><a href="Videos/Thu_TikTok_YTShort_Score_BRANDED.mp4" style="color:inherit;text-decoration:underline;">Videos/Thu_TikTok_YTShort_Score_BRANDED.mp4</a></div>
+    <div class="file-meta">Vertical 1080×1920 · 28 seconds · Pre-edited text overlays preserved + ambient music + fade-to-black logo end card added</div>
+    <span class="status-ready">Ready to Post</span>
+  </div>
+  <div class="video-direction">
+    <strong>🎬 Production Notes</strong>
+    <p style="margin-top:8px;">Original pre-edited video with existing text overlays preserved. Added: ambient music bed, smooth fade to black at end, PlaneWX italic logo + app.planewx.ai end card (2.5s). Upload to Buffer for TikTok and YouTube Shorts.</p>
+  </div>
+  <details class="feedback-section" data-post="7">
+    <summary>Add feedback for Post 7</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <div class="logo-divider"><span class="line"></span><img src="PlaneWX-Italic-Logo.png" alt="PlaneWX"><span class="line"></span></div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- FRIDAY, MARCH 28                               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="day-header">
+    <h2>Friday, March 28</h2>
+    <div class="day-count">1 post — TikTok</div>
+  </div>
+
+  <!-- ══════ POST 8 — TIKTOK ══════ -->
+  <div class="reel-card">
+    <div class="post-label">
+      <span>Post 8 of 11</span>
+      <span class="platform-tag platform-tt">TikTok</span>
+    </div>
+    <div class="reel-preview">
+      <div class="reel-video-placeholder"><div class="no-img" style="background: linear-gradient(135deg, #1a1a2e, #0f3460, #e94560);"></div></div>
+      <div class="reel-video-bg"></div>
+      <div class="tt-topbar">
+        <span>Following</span>
+        <span class="active-tab">For You</span>
+      </div>
+      <div class="reel-overlay-text">
+        <div class="reel-text-line">Tomorrow's flight?</div>
+        <div class="reel-text-line" style="margin-top:16px;">I checked the weather</div>
+        <div class="reel-text-line" style="color:#10B981; font-size:26px;">on Wednesday.</div>
+      </div>
+      <div class="reel-sidebar">
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">♡</span><span class="reel-sidebar-count">3,412</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">💬</span><span class="reel-sidebar-count">201</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">🔖</span><span class="reel-sidebar-count">1.2K</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">↗️</span><span class="reel-sidebar-count">Share</span></div>
+      </div>
+      <div class="reel-bottom">
+        <div class="reel-account">
+          <div class="reel-account-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+          <span class="reel-account-name">@planewx</span>
+        </div>
+        <div class="reel-caption-text">No last-minute scramble. No stress at the airport. Just confirmation of what you already knew.
+
+PlaneWX gives you the weather picture up to 14 days out — scored against your airplane and your minimums. By Saturday morning, you already know.
+
+Free — link in bio.</div>
+        <div class="reel-hashtags">#PlaneWX #PilotLife #WeekendFlying #WXScore #FridayVibes</div>
+        <div class="tt-music-bar">🎵 Ambient cinematic - planewx</div>
+      </div>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Buffer · Fri 7:00 PM ET</span></div>
+  <div class="video-source">
+    <strong>📂 Branded Video</strong>
+    <div class="file-name"><a href="Videos/Fri_TikTok_Wednesday_BRANDED.mp4" style="color:inherit;text-decoration:underline;">Videos/Fri_TikTok_Wednesday_BRANDED.mp4</a></div>
+    <div class="file-meta">Vertical 1080×1920 · 29 seconds · Pillow-rendered text overlays matching carousel style + ambient music + fade-to-black logo end card</div>
+    <span class="status-ready">Ready to Post</span>
+  </div>
+  <div class="video-direction">
+    <strong>🎬 Production Notes</strong>
+    <p style="margin-top:8px;">Processed from <code>videoSpeed.mp4</code> — stunning coastal flyover footage. Pillow-rendered overlays matching carousel style. Text cards: "Your Saturday flight?" → "Checked the weather / on Wednesday." (emerald) → "14-day planning. / Your WX Score." (cyan) → "PlaneWX / The confidence to go, or the courage to stay." (emerald). Ambient music at 15% mix. Fades to black → PlaneWX italic logo + app.planewx.ai end card.</p>
+  </div>
+  <details class="feedback-section" data-post="8">
+    <summary>Add feedback for Post 8</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <div class="logo-divider"><span class="line"></span><img src="PlaneWX-Italic-Logo.png" alt="PlaneWX"><span class="line"></span></div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- SATURDAY, MARCH 29                             -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="day-header">
+    <h2>Saturday, March 29</h2>
+    <div class="day-count">3 posts — Facebook, Instagram, TikTok</div>
+  </div>
+
+  <!-- ══════ POST 9 — FACEBOOK PHOTO ══════ -->
+  <div class="fb-card">
+    <div class="post-label">
+      <span>Post 9 of 11</span>
+      <span class="platform-tag platform-fb">Facebook</span>
+    </div>
+    <div class="fb-post-header">
+      <div class="fb-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+      <div>
+        <div class="fb-post-name">PlaneWX</div>
+        <div class="fb-post-time">Just now · 🌐</div>
+      </div>
+    </div>
+    <div class="fb-post-caption">Saturday morning. Coffee's hot. Airplane's fueled.
+
+Checked the WX Score last night — 95% for the Sunday leg to Rogers. Models are in strong agreement. Winds favor a 25-knot tailwind. Visibility unlimited.
+
+This is what it feels like when you've been watching the weather picture come together for a week instead of scrambling to interpret it at 6 AM.
+
+Have a great flying day out there.
+
+app.planewx.ai — free, no credit card.</div>
+    <img class="fb-post-image" src="Photos/IMG_0415.jpeg" alt="Mark on ramp with Cirrus">
+    <div class="fb-post-stats">
+      <span>👍 ❤️ ✈️ 48</span>
+      <span>22 comments · 11 shares</span>
+    </div>
+    <div class="fb-post-actions">
+      <span class="fb-action-btn">👍 Like</span>
+      <span class="fb-action-btn">💬 Comment</span>
+      <span class="fb-action-btn">↗️ Share</span>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Meta Business Suite · Sat 7:00 AM ET</span></div>
+  <details class="feedback-section" data-post="9">
+    <summary>Add feedback for Post 9</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <!-- ══════ POST 10 — INSTAGRAM REEL ══════ -->
+  <div class="reel-card">
+    <div class="post-label">
+      <span>Post 10 of 11</span>
+      <span class="platform-tag platform-ig">Instagram Reel</span>
+    </div>
+    <div class="reel-preview">
+      <div class="reel-video-placeholder"><img src="Photos/13f51268-hero.JPG" alt="Air-to-air hero shot"></div>
+      <div class="reel-video-bg"></div>
+      <div class="reel-overlay-text">
+        <div class="reel-text-line" style="font-size:16px; opacity:0.8;">Saturday morning.</div>
+        <div class="reel-text-line" style="color:#10B981; font-size:28px; margin:8px 0;">WX Score: 95%</div>
+        <div class="reel-text-line" style="font-size:16px; opacity:0.8;">Three models agree.</div>
+        <div class="reel-text-line" style="font-size:18px; margin-top:12px;">Your decision —</div>
+        <div class="reel-text-line" style="font-size:18px;">made days ago.</div>
+      </div>
+      <div class="reel-sidebar">
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">♡</span><span class="reel-sidebar-count">1,847</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">💬</span><span class="reel-sidebar-count">124</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">✈️</span><span class="reel-sidebar-count">Send</span></div>
+      </div>
+      <div class="reel-bottom">
+        <div class="reel-account">
+          <div class="reel-account-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+          <span class="reel-account-name">plane_wx</span>
+        </div>
+        <div class="reel-caption-text">The best go/no-go decision is the one you made three days ago.
+
+PlaneWX gives you the weather picture days in advance — scored against your specific aircraft and personal minimums. By Saturday morning, you already know.
+
+Free plan. Full analysis engine. No credit card.
+
+app.planewx.ai</div>
+        <div class="reel-hashtags">#PlaneWX #SaturdayFlying #PilotLife #WXScore #CirrusSR22T</div>
+      </div>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Meta Business Suite · Sat 8:00 AM ET</span></div>
+  <div class="video-source">
+    <strong>📂 Branded Video</strong>
+    <div class="file-name"><a href="Videos/Sat_IG_Reel_Saturday_BRANDED.mp4" style="color:inherit;text-decoration:underline;">Videos/Sat_IG_Reel_Saturday_BRANDED.mp4</a></div>
+    <div class="file-meta">Vertical 1080×1920 · 54 seconds · Pre-edited text overlays preserved + ambient music + fade-to-black logo end card added</div>
+    <span class="status-ready">Ready to Post</span>
+  </div>
+  <div class="video-direction">
+    <strong>🎬 Production Notes</strong>
+    <p style="margin-top:8px;">Original pre-edited video with existing text overlays preserved. Added: ambient music bed, smooth fade to black at end, PlaneWX italic logo + app.planewx.ai end card (2.5s). Upload to Meta Business Suite for Instagram Reel. Also post Photos/IMG_0521.jpeg and Photos/13f51268-hero.JPG to Stories throughout the day.</p>
+  </div>
+  <details class="feedback-section" data-post="10">
+    <summary>Add feedback for Post 10</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <!-- ══════ POST 11 — TIKTOK ══════ -->
+  <div class="reel-card">
+    <div class="post-label">
+      <span>Post 11 of 11</span>
+      <span class="platform-tag platform-tt">TikTok</span>
+    </div>
+    <div class="reel-preview">
+      <div class="reel-video-placeholder"><div class="no-img" style="background: linear-gradient(135deg, #0f3460, #16213e, #533483);"></div></div>
+      <div class="reel-video-bg"></div>
+      <div class="tt-topbar">
+        <span>Following</span>
+        <span class="active-tab">For You</span>
+      </div>
+      <div class="reel-overlay-text">
+        <div class="reel-text-line">Saturday mornings</div>
+        <div class="reel-text-line" style="color:#10B981;">hit different</div>
+        <div class="reel-text-line" style="font-size:17px; margin-top:12px; opacity:0.85;">when you checked the weather</div>
+        <div class="reel-text-line" style="font-size:17px; opacity:0.85;">on Wednesday.</div>
+      </div>
+      <div class="reel-sidebar">
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">♡</span><span class="reel-sidebar-count">4,521</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">💬</span><span class="reel-sidebar-count">287</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">🔖</span><span class="reel-sidebar-count">1.8K</span></div>
+        <div class="reel-sidebar-item"><span class="reel-sidebar-icon">↗️</span><span class="reel-sidebar-count">Share</span></div>
+      </div>
+      <div class="reel-bottom">
+        <div class="reel-account">
+          <div class="reel-account-avatar"><img src="PlaneWX-Profile.png" alt="PlaneWX" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div>
+          <span class="reel-account-name">@planewx</span>
+        </div>
+        <div class="reel-caption-text">No scrambling. No stress. Just fly.
+
+PlaneWX gives you the weather picture up to 14 days out — scored against your airplane and your minimums.
+
+Free — link in bio.</div>
+        <div class="reel-hashtags">#PlaneWX #PilotLife #SaturdayFlying #WXScore #WeekendVibes</div>
+        <div class="tt-music-bar">🎵 Ambient cinematic - planewx</div>
+      </div>
+    </div>
+  </div>
+  <div class="schedule-tag"><span>📅 Buffer · Sat 9:00 AM ET</span></div>
+  <div class="video-source">
+    <strong>📂 Branded Video</strong>
+    <div class="file-name"><a href="Videos/Sat_TikTok_HitDifferent_BRANDED.mp4" style="color:inherit;text-decoration:underline;">Videos/Sat_TikTok_HitDifferent_BRANDED.mp4</a></div>
+    <div class="file-meta">Vertical 1080×1920 · 38 seconds · Pre-edited text overlays preserved + ambient music + fade-to-black logo end card added</div>
+    <span class="status-ready">Ready to Post</span>
+  </div>
+  <div class="video-direction">
+    <strong>🎬 Production Notes</strong>
+    <p style="margin-top:8px;">Original pre-edited video with existing text overlays preserved. Added: ambient music bed, smooth fade to black at end, PlaneWX italic logo + app.planewx.ai end card (2.5s). Upload to Buffer for TikTok.</p>
+  </div>
+  <details class="feedback-section" data-post="11">
+    <summary>Add feedback for Post 11</summary>
+    <textarea class="feedback-textarea" placeholder="Type feedback here..."></textarea>
+  </details>
+
+  <div class="logo-divider"><span class="line"></span><img src="PlaneWX-Italic-Logo.png" alt="PlaneWX"><span class="line"></span></div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- WX SCORE SCREENSHOTS                           -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="day-header" style="margin-top:28px;">
+    <h2>Available WX Score Screenshots</h2>
+    <div class="day-count">Cropped from your screen recording — use in Stories or swap into posts</div>
+  </div>
+
+  <div class="screenshots-grid">
+    <div>
+      <img src="Screenshots/WXScore-Trip-Card-95.jpg" alt="Trip Card" onclick="openLightbox(this)">
+      <div class="ss-label">Trip Card — Post 5</div>
+    </div>
+    <div>
+      <img src="Screenshots/WXScore-Detail-95.jpg" alt="95% Detail" onclick="openLightbox(this)">
+      <div class="ss-label">95% Detail — Stories</div>
+    </div>
+    <div>
+      <img src="Screenshots/WXScore-Weather-Cards.jpg" alt="Weather Cards" onclick="openLightbox(this)">
+      <div class="ss-label">Weather Cards — Stories</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- MARK'S FEEDBACK PANEL                          -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="mark-feedback-panel">
+    <h3>✈️ Mark's Feedback</h3>
+    <div class="sub">After reviewing, type any overall notes below. Click "Email Feedback to Sara" to send everything in one go.</div>
+    <textarea class="mark-overall-textarea" id="mark-overall" placeholder="Overall thoughts on Week 1 content — voice, messaging, photo choices, anything you'd change..."></textarea>
+    <button class="send-feedback-btn" onclick="compileFeedback()">📧 Email Feedback to Sara</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- FOOTER                                         -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="footer">
+    <img src="PlaneWX-Italic-Logo.png" alt="PlaneWX"><br>
+    <span>Week 1 Content Review · March 24–29, 2026</span><br>
+    <span style="margin-top:4px; display:inline-block;">© 2026 PlaneWX, LLC. All rights reserved.</span>
+  </div>
+
+</div>
+
+<!-- ══════ LIGHTBOX ══════ -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+// Carousel logic
+const carouselState = {};
+
+function moveCarousel(id, dir) {
+  if (!carouselState[id]) carouselState[id] = 0;
+  const track = document.querySelector('#' + id + ' .ig-carousel-track');
+  const total = track.children.length;
+  carouselState[id] = Math.max(0, Math.min(total - 1, carouselState[id] + dir));
+  track.style.transform = 'translateX(-' + (carouselState[id] * 100) + '%)';
+  updateDots(id);
+}
+
+function goToSlide(id, idx) {
+  carouselState[id] = idx;
+  const track = document.querySelector('#' + id + ' .ig-carousel-track');
+  track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+  updateDots(id);
+}
+
+function updateDots(id) {
+  const dots = document.querySelectorAll('#' + id + '-dots .ig-dot');
+  dots.forEach((d, i) => d.classList.toggle('active', i === (carouselState[id] || 0)));
+}
+
+// Touch/swipe support for carousels
+document.querySelectorAll('.ig-carousel-container').forEach(container => {
+  let startX = 0;
+  const id = container.id;
+  container.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+  container.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) moveCarousel(id, diff > 0 ? 1 : -1);
+  });
+});
+
+// Lightbox
+function openLightbox(el) {
+  document.getElementById('lightbox-img').src = el.src;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+// Compile feedback from all textareas into a mailto link
+function compileFeedback() {
+  let body = 'WEEK 1 CONTENT REVIEW FEEDBACK\n';
+  body += '================================\n\n';
+
+  // Gather per-post feedback
+  document.querySelectorAll('.feedback-section').forEach(section => {
+    const postNum = section.dataset.post;
+    const textarea = section.querySelector('textarea');
+    if (textarea && textarea.value.trim()) {
+      body += 'POST ' + postNum + ':\n' + textarea.value.trim() + '\n\n';
+    }
+  });
+
+  // Overall feedback
+  const overall = document.getElementById('mark-overall');
+  if (overall && overall.value.trim()) {
+    body += 'OVERALL NOTES:\n' + overall.value.trim() + '\n\n';
+  }
+
+  if (body.indexOf('POST') === -1 && (!overall || !overall.value.trim())) {
+    alert('No feedback entered yet! Add notes to individual posts or type overall feedback first.');
+    return;
+  }
+
+  body += '---\nSent from PlaneWX Week 1 Review Page';
+
+  const mailto = 'mailto:sara10bloom@gmail.com?subject=' +
+    encodeURIComponent('PlaneWX Week 1 — Mark\'s Feedback') +
+    '&body=' + encodeURIComponent(body);
+
+  window.location.href = mailto;
+}
+</script>
+
+</body>
+</html>
